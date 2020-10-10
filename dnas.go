@@ -25,11 +25,11 @@ type Client struct {
 	//API Key for DNA Spaces.  See [the documentation on how to generate one](https://developer.cisco.com/docs/dna-spaces/#!getting-started).
 	APIKey string
 
-	AccessPoints  *AccessPointsService
-	ActiveClients *ActiveClientsService
-	History       *HistoryService
-	Notifications *NotificationsService
-	Map           *MapService
+	AccessPointsService  *AccessPointsService
+	ActiveClientsService *ActiveClientsService
+	HistoryService       *HistoryService
+	NotificationsService *NotificationsService
+	MapService           *MapService
 }
 
 // AccessPointsService represents the Access Points API group
@@ -85,11 +85,11 @@ func NewClient(apikey string, region string, client *http.Client) (*Client, erro
 		HTTPClient: client,
 		APIKey:     apikey,
 	}
-	c.AccessPoints = &AccessPointsService{client: c}
-	c.ActiveClients = &ActiveClientsService{client: c}
-	c.History = &HistoryService{client: c}
-	c.Map = &MapService{client: c}
-	c.Notifications = &NotificationsService{client: c}
+	c.AccessPointsService = &AccessPointsService{client: c}
+	c.ActiveClientsService = &ActiveClientsService{client: c}
+	c.HistoryService = &HistoryService{client: c}
+	c.MapService = &MapService{client: c}
+	c.NotificationsService = &NotificationsService{client: c}
 
 	return c, nil
 }

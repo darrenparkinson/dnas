@@ -3,6 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/darrenparkinson/dnas?status.svg)](https://godoc.org/github.com/darrenparkinson/dnas)
 [![PkgGoDev](https://pkg.go.dev/badge/darrenparkinson/dnas)](https://pkg.go.dev/github.com/darrenparkinson/dnas)
 [![Go Report Card](https://goreportcard.com/badge/github.com/darrenparkinson/dnas)](https://goreportcard.com/report/github.com/darrenparkinson/dnas)
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/darrenparkinson/dnas)
 
 
 This repository is intended as a simple to use library for the Go language to interact with the [Cisco DNA Spaces API](https://developer.cisco.com/docs/dna-spaces).
@@ -23,7 +24,7 @@ Construct a new DNA Spaces client, then use the various services on the client t
 
 ```go
 d, _ := dnas.NewClient(apikey, region, nil)
-floors, err := d.ActiveClients.Floors(context.Background())
+floors, err := d.ActiveClientsService.Floors(context.Background())
 ```
 
 Some API methods have optional parameters that can be passed, for example:
@@ -31,7 +32,7 @@ Some API methods have optional parameters that can be passed, for example:
 ```go
 d, _ := dnas.NewClient(apikey, region, nil)
 opt := &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT")}
-count, err := d.ActiveClients.Count(context.Background(), opt)
+count, err := d.ActiveClientsService.Count(context.Background(), opt)
 ```
 
 The services of a client divide the API into logical chunks and correspond to the structure of the DNA Spaces API documentation at https://developer.cisco.com/docs/dna-spaces/#!dna-spaces-location-cloud-api
@@ -68,7 +69,7 @@ opts := &dnas.ClientParameters{
 Where pagination is provided, Cisco provides the Page and Limit query parameters as part of the request parameters for a given endpoint. Cisco specifies these as strings, so the helper function `dnas.String` will be necessary:
 
 ```go
-clients, err := c.ActiveClients.Clients(ctx, &dnas.ClientParameters{Limit: dnas.String("1"), Page: dnas.String("1")})
+clients, err := c.ActiveClientsService.Clients(ctx, &dnas.ClientParameters{Limit: dnas.String("1"), Page: dnas.String("1")})
 ```
 
 By way of an example, you might use the following to work through multiple pages:
@@ -76,7 +77,7 @@ By way of an example, you might use the following to work through multiple pages
 ```go
 count := 1
 for {
-    ac, err := c.ActiveClients.Clients(ctx, &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT"), Limit: dnas.String("1"), Page: dnas.String(fmt.Sprint(count))})
+    ac, err := c.ActiveClientsService.Clients(ctx, &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT"), Limit: dnas.String("1"), Page: dnas.String(fmt.Sprint(count))})
     if err != nil {
         log.Fatal(err)
     }
@@ -104,7 +105,7 @@ All other errors are returned as `ErrUnknown`
 As an example:
 
 ```go
-count, err := c.ActiveClients.Count(ctx, &dnas.ClientParameters{})
+count, err := c.ActiveClientsService.Count(ctx, &dnas.ClientParameters{})
 if errors.Is(err, dnas.ErrUnauthorized) {
 	log.Fatal("Sorry, you're not allowed to do that.")
 }
