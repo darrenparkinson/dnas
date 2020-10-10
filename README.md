@@ -63,6 +63,31 @@ opts := &dnas.ClientParameters{
 }
 ```
 
+## Pagination
+
+Where pagination is provided, Cisco provides the Page and Limit query parameters as part of the request parameters for a given endpoint. Cisco specifies these as strings, so the helper function `dnas.String` will be necessary:
+
+```go
+clients, err := c.ActiveClients.Clients(ctx, &dnas.ClientParameters{Limit: dnas.String("1"), Page: dnas.String("1")})
+```
+
+By way of an example, you might use the following to work through multiple pages:
+
+```go
+count := 1
+for {
+    ac, err := c.ActiveClients.Clients(ctx, &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT"), Limit: dnas.String("1"), Page: dnas.String(fmt.Sprint(count))})
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(len(ac.Results), ac.Results[0].MacAddress, ac.Results[0].IPAddress)
+    count++
+    if ac.MorePage == false {
+        break
+    }
+}
+```
+
 ## Errors
 
 In the [documentation](https://developer.cisco.com/docs/dna-spaces), Cisco identifies four returned errors.  These are provided as constants so that you may check against them:
@@ -103,11 +128,11 @@ The following oulines the available endpoints and their status in relation to im
 
 ## Active Clients
 
-| Method | Endpoint        | Status          |
-|--------|-----------------|-----------------|
-| GET    | /clients        | Not Implemented |
-| GET    | /clients/count  | Implemented     |
-| GET    | /clients/floors | Implemented     |
+| Method | Endpoint        | Status      |
+|--------|-----------------|-------------|
+| GET    | /clients        | Implemented |
+| GET    | /clients/count  | Implemented |
+| GET    | /clients/floors | Implemented |
 
 ## Access Points
 
