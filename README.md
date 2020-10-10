@@ -67,12 +67,12 @@ opts := &dnas.ClientParameters{
 
 In the [documentation](https://developer.cisco.com/docs/dna-spaces), Cisco identifies four returned errors.  These are provided as constants so that you may check against them:
 
-| Code | Error        | Constant           |
-|------|--------------|--------------------|
-| 400  | Bad Request  | `ErrBadRequest`    |
-| 401  | Unauthorized | `ErrUnauthorized`  |
-| 403  | Forbidden    | `ErrForbidden`     |
-| 500  | Unauthorized | `ErrInternalError` |
+| Code | Error                | Constant           |
+|------|----------------------|--------------------|
+| 400  | Bad Request          | `ErrBadRequest`    |
+| 401  | Unauthorized Request | `ErrUnauthorized`  |
+| 403  | Forbidden            | `ErrForbidden`     |
+| 500  | Internal Error       | `ErrInternalError` |
 
 All other errors are returned as `ErrUnknown`
 
