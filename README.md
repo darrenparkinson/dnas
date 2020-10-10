@@ -65,7 +65,7 @@ opts := &dnas.ClientParameters{
 
 ## Errors
 
-In the [documentation](), Cisco identifies four returned errors.  These are provided as constants so that you may check against them:
+In the [documentation](https://developer.cisco.com/docs/dna-spaces), Cisco identifies four returned errors.  These are provided as constants so that you may check against them:
 
 | Code | Error        | Constant           |
 |------|--------------|--------------------|
