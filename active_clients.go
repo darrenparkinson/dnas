@@ -221,7 +221,7 @@ type ClientFloorsResponse struct {
 }
 
 // Clients returns active clients.  If no parameters are given, all active clients are returned with pagination. The default page number is 1, default number of items per page is 1000.
-func (s *ActiveClientsService) Clients(ctx context.Context, opts *ClientParameters) (LocationDeviceResults, error) {
+func (s *ActiveClientsService) ListClients(ctx context.Context, opts *ClientParameters) (LocationDeviceResults, error) {
 	ldr := LocationDeviceResults{}
 	url := fmt.Sprintf("%s/clients", s.client.BaseURL)
 	u, err := addOptions(url, opts)
@@ -239,7 +239,7 @@ func (s *ActiveClientsService) Clients(ctx context.Context, opts *ClientParamete
 }
 
 // Count retrieves the active clients count. The API supports searching by a variety of parameters. If no parameters are given, the count of all active clients are returned.
-func (s *ActiveClientsService) Count(ctx context.Context, opts *ClientParameters) (ClientCountResponse, error) {
+func (s *ActiveClientsService) GetCount(ctx context.Context, opts *ClientParameters) (ClientCountResponse, error) {
 	ccr := ClientCountResponse{}
 	url := fmt.Sprintf("%s/clients/count", s.client.BaseURL)
 	u, err := addOptions(url, opts)
@@ -257,7 +257,7 @@ func (s *ActiveClientsService) Count(ctx context.Context, opts *ClientParameters
 }
 
 // Floors provides a list of all the floors unique identifiers which have associated clients.
-func (s *ActiveClientsService) Floors(ctx context.Context) (ClientFloorsResponse, error) {
+func (s *ActiveClientsService) ListFloors(ctx context.Context) (ClientFloorsResponse, error) {
 	cfr := ClientFloorsResponse{}
 	url := fmt.Sprintf("%s/clients/floors", s.client.BaseURL)
 

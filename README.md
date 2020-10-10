@@ -24,7 +24,7 @@ Construct a new DNA Spaces client, then use the various services on the client t
 
 ```go
 d, _ := dnas.NewClient(apikey, region, nil)
-floors, err := d.ActiveClientsService.Floors(context.Background())
+floors, err := d.ActiveClientsService.ListFloors(context.Background())
 ```
 
 Some API methods have optional parameters that can be passed, for example:
@@ -32,7 +32,7 @@ Some API methods have optional parameters that can be passed, for example:
 ```go
 d, _ := dnas.NewClient(apikey, region, nil)
 opt := &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT")}
-count, err := d.ActiveClientsService.Count(context.Background(), opt)
+count, err := d.ActiveClientsService.GetCount(context.Background(), opt)
 ```
 
 The services of a client divide the API into logical chunks and correspond to the structure of the DNA Spaces API documentation at https://developer.cisco.com/docs/dna-spaces/#!dna-spaces-location-cloud-api
@@ -69,7 +69,7 @@ opts := &dnas.ClientParameters{
 Where pagination is provided, Cisco provides the Page and Limit query parameters as part of the request parameters for a given endpoint. Cisco specifies these as strings, so the helper function `dnas.String` will be necessary:
 
 ```go
-clients, err := c.ActiveClientsService.Clients(ctx, &dnas.ClientParameters{Limit: dnas.String("1"), Page: dnas.String("1")})
+clients, err := c.ActiveClientsService.ListClients(ctx, &dnas.ClientParameters{Limit: dnas.String("1"), Page: dnas.String("1")})
 ```
 
 By way of an example, you might use the following to work through multiple pages:
@@ -77,7 +77,7 @@ By way of an example, you might use the following to work through multiple pages
 ```go
 count := 1
 for {
-    ac, err := c.ActiveClientsService.Clients(ctx, &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT"), Limit: dnas.String("1"), Page: dnas.String(fmt.Sprint(count))})
+    ac, err := c.ActiveClientsService.ListClients(ctx, &dnas.ClientParameters{Associated: dnas.Bool(true), DeviceType: dnas.String("CLIENT"), Limit: dnas.String("1"), Page: dnas.String(fmt.Sprint(count))})
     if err != nil {
         log.Fatal(err)
     }
@@ -105,7 +105,7 @@ All other errors are returned as `ErrUnknown`
 As an example:
 
 ```go
-count, err := c.ActiveClientsService.Count(ctx, &dnas.ClientParameters{})
+count, err := c.ActiveClientsService.GetCount(ctx, &dnas.ClientParameters{})
 if errors.Is(err, dnas.ErrUnauthorized) {
 	log.Fatal("Sorry, you're not allowed to do that.")
 }
@@ -117,25 +117,32 @@ Currently this library only implements some of the functionality.  It is intende
 
 The following oulines the available endpoints and their status in relation to implementation in this library.  As you can see, still a way to go.
 
-## Map
+## Map Service
 
-| Method | Endpoint                      | Status          |
-|--------|-------------------------------|-----------------|
-| POST   | /map                          | Not Implemented |
-| GET    | /map/hierarchy                | Not Implemented |
-| GET    | /map/elements/{elementId}     | Not Implemented |
-| DELETE | /map/elements/{elementId}     | Not Implemented |
-| GET    | /map/images/floor/{imageName} | Not Implemented |
+| Method | Endpoint                      | Status          | Function      |
+|--------|-------------------------------|-----------------|---------------|
+| POST   | /map                          | Not Implemented |               |
+| GET    | /map/hierarchy                | Implemented     | GetHierarchy  |
+| GET    | /map/elements/{elementId}     | Implemented     | GetMapElement |
+| DELETE | /map/elements/{elementId}     | Not Implemented |               |
+| GET    | /map/images/floor/{imageName} | Not Implemented |               |
 
-## Active Clients
+For Map Hierarchy, the `InclusionExclusionRegion` can have a variable number of vertices and additonal items, so this has been specified as a `[]map[string]interface{}`.  Clearly this isn't ideal, so if anyone has any better way to do this, I'd be glad to hear it.  In the meantime though, you'd have to access them something like this:
 
-| Method | Endpoint        | Status      |
-|--------|-----------------|-------------|
-| GET    | /clients        | Implemented |
-| GET    | /clients/count  | Implemented |
-| GET    | /clients/floors | Implemented |
+```go
+fmt.Println(h.Map[0].RelationshipData.Children[0].RelationshipData.Children[0].Details.InclusionExclusionRegion[0]["type"])
+fmt.Println(h.Map[0].RelationshipData.Children[0].RelationshipData.Children[0].Details.InclusionExclusionRegion[0]["vertices"])
+```
 
-## Access Points
+## Active Clients Service
+
+| Method | Endpoint        | Status      | Function    |
+|--------|-----------------|-------------|-------------|
+| GET    | /clients        | Implemented | ListClients |
+| GET    | /clients/count  | Implemented | GetCount    |
+| GET    | /clients/floors | Implemented | ListFloors  |
+
+## Access Points Service
 
 | Method | Endpoint            | Status          |
 |--------|---------------------|-----------------|
