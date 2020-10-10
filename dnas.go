@@ -25,8 +25,16 @@ type Client struct {
 	//API Key for DNA Spaces.  See [the documentation on how to generate one](https://developer.cisco.com/docs/dna-spaces/#!getting-started).
 	APIKey string
 
-	ActiveClients *ActiveClientsService
 	AccessPoints  *AccessPointsService
+	ActiveClients *ActiveClientsService
+	History       *HistoryService
+	Notifications *NotificationsService
+	Map           *MapService
+}
+
+// AccessPointsService represents the Access Points API group
+type AccessPointsService struct {
+	client *Client
 }
 
 // ActiveClientsService represents the Active Clients API group
@@ -34,8 +42,18 @@ type ActiveClientsService struct {
 	client *Client
 }
 
-// AccessPointsService represents the Active Clients API group
-type AccessPointsService struct {
+// HistoryService represents the Clients History API group
+type HistoryService struct {
+	client *Client
+}
+
+// MapService represents the Map API group
+type MapService struct {
+	client *Client
+}
+
+// NotificationsService represents the Notifications API group
+type NotificationsService struct {
 	client *Client
 }
 
@@ -46,12 +64,6 @@ type ListOptions struct {
 
 	// For paginated results, the number of results to include per page.
 	PerPage int `url:"per_page,omitempty"`
-}
-
-// Error represents an error from DNA Spaces
-type Error struct {
-	Code    int
-	Message string
 }
 
 // NewClient is a helper function that returns an new dnas client given a region (io or eu) and API Key.
@@ -73,8 +85,11 @@ func NewClient(apikey string, region string, client *http.Client) (*Client, erro
 		HTTPClient: client,
 		APIKey:     apikey,
 	}
-	c.ActiveClients = &ActiveClientsService{client: c}
 	c.AccessPoints = &AccessPointsService{client: c}
+	c.ActiveClients = &ActiveClientsService{client: c}
+	c.History = &HistoryService{client: c}
+	c.Map = &MapService{client: c}
+	c.Notifications = &NotificationsService{client: c}
 
 	return c, nil
 }
@@ -107,7 +122,18 @@ func (c *Client) makeRequest(ctx context.Context, req *http.Request, v interface
 	defer res.Body.Close()
 
 	if res.StatusCode < http.StatusOK || res.StatusCode >= http.StatusBadRequest {
-		return fmt.Errorf("error from dnas, status code: %d", res.StatusCode)
+		switch res.StatusCode {
+		case 400:
+			return ErrBadRequest
+		case 401:
+			return ErrUnauthorized
+		case 403:
+			return ErrForbidden
+		case 500:
+			return ErrInternalError
+		default:
+			return ErrUnknown
+		}
 	}
 
 	if res.StatusCode == http.StatusCreated {
@@ -117,6 +143,7 @@ func (c *Client) makeRequest(ctx context.Context, req *http.Request, v interface
 	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
 		return err
 	}
+
 	return nil
 }
 

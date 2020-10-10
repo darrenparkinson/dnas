@@ -63,6 +63,28 @@ opts := &dnas.ClientParameters{
 }
 ```
 
+## Errors
+
+In the [documentation](), Cisco identifies four returned errors.  These are provided as constants so that you may check against them:
+
+| Code | Error        | Constant           |
+|------|--------------|--------------------|
+| 400  | Bad Request  | `ErrBadRequest`    |
+| 401  | Unauthorized | `ErrUnauthorized`  |
+| 403  | Forbidden    | `ErrForbidden`     |
+| 500  | Unauthorized | `ErrInternalError` |
+
+All other errors are returned as `ErrUnknown`
+
+As an example:
+
+```go
+count, err := c.ActiveClients.Count(ctx, &dnas.ClientParameters{})
+if errors.Is(err, dnas.ErrUnauthorized) {
+	log.Fatal("Sorry, you're not allowed to do that.")
+}
+```
+
 # Roadmap
 
 Currently this library only implements some of the functionality.  It is intended that this API will support all endpoints as they are required.  Feel free to log issues if there are specific endpoints you'd like, or see Contributing.  
@@ -79,7 +101,6 @@ The following oulines the available endpoints and their status in relation to im
 | DELETE | /map/elements/{elementId}     | Not Implemented |
 | GET    | /map/images/floor/{imageName} | Not Implemented |
 
-
 ## Active Clients
 
 | Method | Endpoint        | Status          |
@@ -94,7 +115,6 @@ The following oulines the available endpoints and their status in relation to im
 |--------|---------------------|-----------------|
 | GET    | /accessPoints       | Not Implemented |
 | GET    | /accessPoints/count | Not Implemented |
-
 
 ## Clients History
 
