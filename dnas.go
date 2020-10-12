@@ -57,15 +57,6 @@ type NotificationsService struct {
 	client *Client
 }
 
-// ListOptions are used for pagination
-type ListOptions struct {
-	// For paginated results, page of results to retreive.
-	Page int `url:"page,omitempty"`
-
-	// For paginated results, the number of results to include per page.
-	PerPage int `url:"per_page,omitempty"`
-}
-
 // NewClient is a helper function that returns an new dnas client given a region (io or eu) and API Key.
 // Optionally you can provide your own http client or use nil to use the default.
 func NewClient(apikey string, region string, client *http.Client) (*Client, error) {
