@@ -1,15 +1,18 @@
 package dnas
 
+// MapHierarchyResponse is the top level response for GetHierarchy
 type MapHierarchyResponse struct {
 	// Top level item for Map Items
 	Map []MapItem `json:"map"`
 }
 
+// MapElementResponse is the top level response for GetMapElement
 type MapElementResponse struct {
 	Success bool    `json:"success,omitempty"`
 	Map     MapItem `json:"map"`
 }
 
+// MapItem represents an individual map element
 type MapItem struct {
 	Address string `json:"address,omitempty"`
 
@@ -38,6 +41,7 @@ type MapItem struct {
 	SourceType string `json:"sourceType,omitempty"`
 }
 
+// MapItemDetails contains additional detail for a MapItem
 type MapItemDetails struct {
 	CalibrationModelRef string `json:"calibrationModelRef,omitempty"`
 
@@ -70,6 +74,8 @@ type MapItemDetails struct {
 	Width float64 `json:"width,omitempty"`
 }
 
+// MapInclusionExclusionRegionItem is supposed to an InclusionExclusionRegionItem.
+// This is not currently used, but you could use it to extract InclusionExclusionRegionItems to.
 type MapInclusionExclusionRegionItem struct {
 
 	// Indicate how to handle the vertices on map.
@@ -79,6 +85,8 @@ type MapInclusionExclusionRegionItem struct {
 	Vertices int64 `json:"vertices,omitempty"`
 }
 
+// MapItemCorner is supposed to represent part of an InclusionExclusionRegionItem.
+// This is not currently used, but you could use it to extract InclusionExclusionRegionItems to.
 type MapItemCorner struct {
 	// x
 	X float64 `json:"x,omitempty"`
@@ -90,6 +98,7 @@ type MapItemCorner struct {
 	Unit string `json:"unit,omitempty"`
 }
 
+// MapItemRelationshipData contains the relationships with other map items
 type MapItemRelationshipData struct {
 
 	// ancestor ids
@@ -105,6 +114,7 @@ type MapItemRelationshipData struct {
 	Parent interface{} `json:"parent,omitempty"`
 }
 
+// MapResImage represents a map item image.
 type MapResImage struct {
 	Cksum string `json:"cksum,omitempty"`
 

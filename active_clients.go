@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// ClientParameters represent
+// ClientParameters represent the options for ListClients and GetCount
 type ClientParameters struct {
 	// ApMacAddress The mac address of the Access Point (AP).  Available for associated clients only.
 	ApMacAddress *string `url:"apMacAddress,omitempty"`
@@ -90,7 +90,8 @@ type LocationDeviceResults struct {
 
 	Querystring LocationDeviceQuery `json:"querystring,omitempty"`
 
-	// The list of device location data, include associated AP devices location data as the first item and each device's mac address and coordinates as following items in the list.
+	// The list of device location data, include associated AP devices location data as the first item
+	// and each device's mac address and coordinates as following items in the list.
 	Results []LocationDevice `json:"results"`
 
 	// True in a successful response.
@@ -198,7 +199,7 @@ type LocationDevice struct {
 	Username string `json:"userName,omitempty"`
 }
 
-// ClientCountResponse provides the count for the active devices from Count()
+// ClientCountResponse provides the count for the active devices from GetCount()
 type ClientCountResponse struct {
 	Results struct {
 		Total int64 `json:"total"`
@@ -207,7 +208,7 @@ type ClientCountResponse struct {
 	Success     bool                `json:"success"`
 }
 
-// ClientFloorsResponse holds the results from Floors()
+// ClientFloorsResponse holds the results from ListFloors()
 type ClientFloorsResponse struct {
 	Results []struct {
 		// The total number of associated devices on this floor
@@ -220,7 +221,8 @@ type ClientFloorsResponse struct {
 	Success bool `json:"success,omitempty"`
 }
 
-// Clients returns active clients.  If no parameters are given, all active clients are returned with pagination. The default page number is 1, default number of items per page is 1000.
+// ListClients returns active clients.  If no parameters are given, all active clients are returned with pagination.
+// The default page number is 1, default number of items per page is 1000.
 func (s *ActiveClientsService) ListClients(ctx context.Context, opts *ClientParameters) (LocationDeviceResults, error) {
 	ldr := LocationDeviceResults{}
 	url := fmt.Sprintf("%s/clients", s.client.BaseURL)
@@ -238,7 +240,8 @@ func (s *ActiveClientsService) ListClients(ctx context.Context, opts *ClientPara
 	return ldr, nil
 }
 
-// Count retrieves the active clients count. The API supports searching by a variety of parameters. If no parameters are given, the count of all active clients are returned.
+// GetCount retrieves the active clients count. The API supports searching by a variety of parameters.
+// If no parameters are given, the count of all active clients are returned.
 func (s *ActiveClientsService) GetCount(ctx context.Context, opts *ClientParameters) (ClientCountResponse, error) {
 	ccr := ClientCountResponse{}
 	url := fmt.Sprintf("%s/clients/count", s.client.BaseURL)
@@ -256,7 +259,7 @@ func (s *ActiveClientsService) GetCount(ctx context.Context, opts *ClientParamet
 	return ccr, nil
 }
 
-// Floors provides a list of all the floors unique identifiers which have associated clients.
+// ListFloors provides a list of all the floors unique identifiers which have associated clients.
 func (s *ActiveClientsService) ListFloors(ctx context.Context) (ClientFloorsResponse, error) {
 	cfr := ClientFloorsResponse{}
 	url := fmt.Sprintf("%s/clients/floors", s.client.BaseURL)

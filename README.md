@@ -149,7 +149,7 @@ fmt.Println(h.Map[0].RelationshipData.Children[0].RelationshipData.Children[0].D
 | GET    | /accessPoints       | Not Implemented |
 | GET    | /accessPoints/count | Not Implemented |
 
-## Clients History
+## Clients History Service
 
 | Method | Endpoint                    | Status          |
 |--------|-----------------------------|-----------------|
@@ -158,7 +158,7 @@ fmt.Println(h.Map[0].RelationshipData.Children[0].RelationshipData.Children[0].D
 | GET    | /history/clients            | Not Implemented |
 | GET    | /history/clients/{deviceId} | Not Implemented |
 
-## Notifications
+## Notifications Service
 
 | Method | Endpoint                                   | Status          |
 |--------|--------------------------------------------|-----------------|
