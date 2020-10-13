@@ -163,12 +163,26 @@ Also note that `ListAccessPoints` only supports listing "missing" access points 
 
 ## Clients History Service
 
-| Method | Endpoint                    | Status          |
-|--------|-----------------------------|-----------------|
-| GET    | /history                    | Not Implemented |
-| GET    | /history/records/count      | Not Implemented |
-| GET    | /history/clients            | Not Implemented |
-| GET    | /history/clients/{deviceId} | Not Implemented |
+| Method | Endpoint                    | Status          | Function      |
+|--------|-----------------------------|-----------------|---------------|
+| GET    | /history                    | Not Implemented | GetHistoryCSV |
+| GET    | /history/records/count      | Implemented     | GetCount      |
+| GET    | /history/clients            | Implemented     | ListClients   |
+| GET    | /history/clients/{deviceId} | Implemented     | GetClient     |
+
+An example of using history count:
+
+```go
+h, _ := c.HistoryService.GetCount(ctx, &dnas.HistoryCountParameters{FloorID: dnas.String("123467890abcdef")})
+log.Printf("%+v\n", h)
+```
+
+List client history for the last 24 hours (note: this only provides a list of mac addresses):
+
+```go
+h, _ := c.HistoryService.ListClients(ctx, &dnas.HistoryClientsParameters{Ssid: dnas.String("YourSSID")})
+log.Printf("%+v\n", h)
+```
 
 ## Notifications Service
 
