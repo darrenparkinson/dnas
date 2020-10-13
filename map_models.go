@@ -74,7 +74,7 @@ type MapItemDetails struct {
 	Width float64 `json:"width,omitempty"`
 }
 
-// MapInclusionExclusionRegionItem is supposed to an InclusionExclusionRegionItem.
+// MapInclusionExclusionRegionItem is supposed to represent an InclusionExclusionRegionItem.
 // This is not currently used, but you could use it to extract InclusionExclusionRegionItems to.
 type MapInclusionExclusionRegionItem struct {
 

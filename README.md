@@ -144,10 +144,22 @@ fmt.Println(h.Map[0].RelationshipData.Children[0].RelationshipData.Children[0].D
 
 ## Access Points Service
 
-| Method | Endpoint            | Status          |
-|--------|---------------------|-----------------|
-| GET    | /accessPoints       | Not Implemented |
-| GET    | /accessPoints/count | Not Implemented |
+| Method | Endpoint            | Status      | Function         |
+|--------|---------------------|-------------|------------------|
+| GET    | /accessPoints       | Implemented | ListAccessPoints |
+| GET    | /accessPoints/count | Implemented | GetCount         |
+
+Note that `GetCount` accepts a status in order to return the count of access points for that given status.  For this purpose, the `dnas.AccessPointStatus` constant can be used and is one of: All, Active, Inactive, Missing, e.g:
+
+```go
+ac, err := c.AccessPointsService.GetCount(ctx, dnas.Inactive)
+if err != nil {
+    log.Fatal(err)
+}
+log.Printf("Inactive Access Points: %d\n", ac.Count)
+```
+
+Also note that `ListAccessPoints` only supports listing "missing" access points at this time as per the [Cisco documentation](https://developer.cisco.com/docs/dna-spaces/#!dna-spaces-location-cloud-api)
 
 ## Clients History Service
 
