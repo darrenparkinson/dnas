@@ -45,6 +45,12 @@ count, err := d.ActiveClientsService.GetCount(context.Background(), opt)
 
 The services of a client divide the API into logical chunks and correspond to the structure of the DNA Spaces API documentation at https://developer.cisco.com/docs/dna-spaces/#!dna-spaces-location-cloud-api
 
+* [Map Service](https://github.com/darrenparkinson/dnas#map-service)
+* [Active Clients Service](https://github.com/darrenparkinson/dnas#active-clients-service)
+* [Access Points Service](https://github.com/darrenparkinson/dnas#access-points-service)
+* [Clients History Service](https://github.com/darrenparkinson/dnas#clients-history-service)
+* [Notifications Service](https://github.com/darrenparkinson/dnas#notifications-service)
+
 NOTE: Using the context package, one can easily pass cancelation signals and deadlines to various services of the client for handling a request. In case there is no context available, then context.Background() can be used as a starting point.
 
 ## Examples
