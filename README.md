@@ -8,19 +8,27 @@
 
 This repository is intended as a simple to use library for the Go language to interact with the [Cisco DNA Spaces API](https://developer.cisco.com/docs/dna-spaces).
 
+DNA Spaces is "*an industry leading indoor location & IoT-as-a Service platform*" from Cisco.  You can find more information [on their site](https://dnaspaces.cisco.com/) and also [sign up for a free trial](https://dnaspaces.cisco.com/#earlyaccess).
+
+In order to use this library, you must have access to DNA Spaces.  As of now, there is currently no sandbox for DNA Spaces and so you will either need an existing DNA Spaces tenant or you will need to sign up for a trial.  In addition, you will need [Go 1.13 or above](https://golang.org/).  
+
 ## Installing
 
+You can install the library in the usual way as follows:
+
 ```sh
-go get github.com/darrenparkinson/dnas
+$ go get github.com/darrenparkinson/dnas
 ```
 
 ## Usage
+
+In your code, import the library:
 
 ```go
 import "github.com/darrenparkinson/dnas"
 ```
 
-Construct a new DNA Spaces client, then use the various services on the client to access different parts of the DNA Spaces API.  For example:
+You can then construct a new DNA Spaces client, and use the various services on the client to access different parts of the DNA Spaces API.  For example:
 
 ```go
 d, _ := dnas.NewClient(apikey, region, nil)
@@ -38,6 +46,17 @@ count, err := d.ActiveClientsService.GetCount(context.Background(), opt)
 The services of a client divide the API into logical chunks and correspond to the structure of the DNA Spaces API documentation at https://developer.cisco.com/docs/dna-spaces/#!dna-spaces-location-cloud-api
 
 NOTE: Using the context package, one can easily pass cancelation signals and deadlines to various services of the client for handling a request. In case there is no context available, then context.Background() can be used as a starting point.
+
+## Examples
+
+There are some examples of usage in the [examples](examples) folder.  To run these, `git clone` the repository and and run them from the top level folder, e.g.:
+
+```sh
+$ go run examples/count/main.go
+$ go run examples/floors/main.go
+$ go run examples/clients/main.go
+$ go run examples/history/main.go
+```
 
 ## Authentication
 

@@ -215,7 +215,6 @@ func (s *HistoryService) GetHistory(ctx context.Context, opts *HistoryParameters
 	if err != nil {
 		return hr, err
 	}
-	fmt.Println(u)
 	var records [][]string
 	if err := s.client.makeRequest(ctx, req, &records); err != nil {
 		return hr, err
