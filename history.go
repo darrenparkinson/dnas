@@ -161,10 +161,101 @@ type HistoryClientsDeviceResponse []struct {
 	AssociatedApmac string    `json:"associatedApmac"`
 }
 
-// GetHistoryCSV retrieves a small amount of clients history to csv format.
+// HistoryResponse represents the CSV response from GetHistory()
+type HistoryResponse struct {
+	Results []HistoryItem `json:"results"`
+}
+
+// HistoryItem represents a single item in the HistoryResponse from the CSV output of GetHistory()
+// Note that all results are returned as string since they're coming from CSV.  This provides flexibility for conversion.
+type HistoryItem struct {
+	TenantID                string `json:"tenantid"`
+	MacAddress              string `json:"macaddress"`
+	DeviceType              string `json:"devicetype"`
+	CampusID                string `json:"campusid"`
+	BuildingID              string `json:"buildingid"`
+	FloorID                 string `json:"floorid"`
+	FloorHierarchy          string `json:"floorhierarchy"`
+	CoordinateX             string `json:"coordinatex"`
+	CoordinateY             string `json:"coordinatey"`
+	SourceTimestamp         string `json:"sourcetimestamp"`
+	MaxDetectedApMac        string `json:"maxdetectedapmac"`
+	MaxDetectedBand         string `json:"maxdetectedband"`
+	DetectingControllers    string `json:"detectingcontrollers"`
+	FirstActiveAt           string `json:"firstactiveat"`
+	LocatedSinceActiveCount string `json:"locatedsinceactivecount"`
+	ChangedOn               string `json:"changedon"`
+	Manufacturer            string `json:"manufacturer"`
+	Associated              string `json:"associated"`
+	MaxDetectedRssi         string `json:"maxdetectedrssi"`
+	Ssid                    string `json:"ssid"`
+	Username                string `json:"username"`
+	AssociatedApMac         string `json:"associatedapmac"`
+	AssociatedApRssi        string `json:"associatedaprssi"`
+	MaxDetectedSlot         string `json:"maxdetectedslot"`
+	IPAddress               string `json:"ipaddress"`
+	StaticDevice            string `json:"staticdevic"`
+	RecordType              string `json:"recordtype"`
+	ComputeType             string `json:"computetype"`
+	Source                  string `json:"source"`
+	MacHashed               string `json:"machashed"`
+}
+
+// GetHistory retrieves a small amount of clients history to csv format.
 // If startTime and endTime is not given, the time period is last 24 hours.
-// If records ammount if more than 50K, the user receives error response and indicate the time range needs to be reduced.
-// func (s *HistoryService) GetHistoryCSV() {}
+// If records amount is more than 50K, the user receives error response and indicates the time range needs to be reduced.
+func (s *HistoryService) GetHistory(ctx context.Context, opts *HistoryParameters) (HistoryResponse, error) {
+	var hr HistoryResponse
+	url := fmt.Sprintf("%s/history", s.client.BaseURL)
+	u, err := addOptions(url, opts)
+	if err != nil {
+		return hr, err
+	}
+	req, err := http.NewRequest("GET", u, nil)
+	if err != nil {
+		return hr, err
+	}
+	fmt.Println(u)
+	var records [][]string
+	if err := s.client.makeRequest(ctx, req, &records); err != nil {
+		return hr, err
+	}
+	for _, record := range records[1:] {
+		hr.Results = append(hr.Results, HistoryItem{
+			TenantID:                record[0],
+			MacAddress:              record[1],
+			DeviceType:              record[2],
+			CampusID:                record[3],
+			BuildingID:              record[4],
+			FloorID:                 record[5],
+			FloorHierarchy:          record[6],
+			CoordinateX:             record[7],
+			CoordinateY:             record[8],
+			SourceTimestamp:         record[9],
+			MaxDetectedApMac:        record[10],
+			MaxDetectedBand:         record[11],
+			DetectingControllers:    record[12],
+			FirstActiveAt:           record[13],
+			LocatedSinceActiveCount: record[14],
+			ChangedOn:               record[15],
+			Manufacturer:            record[16],
+			Associated:              record[17],
+			MaxDetectedRssi:         record[18],
+			Ssid:                    record[19],
+			Username:                record[20],
+			AssociatedApMac:         record[21],
+			AssociatedApRssi:        record[22],
+			MaxDetectedSlot:         record[23],
+			IPAddress:               record[24],
+			StaticDevice:            record[25],
+			RecordType:              record[26],
+			ComputeType:             record[27],
+			Source:                  record[28],
+			MacHashed:               record[29],
+		})
+	}
+	return hr, nil
+}
 
 // GetCount retrieves the clients history records amount in given time range.
 // If startTime and endTime is not being given, the time range is last 24 hours.

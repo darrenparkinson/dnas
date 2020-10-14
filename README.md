@@ -111,6 +111,12 @@ if errors.Is(err, dnas.ErrUnauthorized) {
 }
 ```
 
+In addition, the error is wrapped in with the original response from Cisco, e.g:
+
+```
+2020/10/13 09:00:00 dnas: internal error: There are 155478 records in request time range, more than the limit 50000. Please reduce the time range.
+```
+
 # Roadmap
 
 Currently this library only implements some of the functionality.  It is intended that this API will support all endpoints as they are required.  Feel free to log issues if there are specific endpoints you'd like, or see Contributing.  
@@ -163,12 +169,38 @@ Also note that `ListAccessPoints` only supports listing "missing" access points 
 
 ## Clients History Service
 
-| Method | Endpoint                    | Status          | Function      |
-|--------|-----------------------------|-----------------|---------------|
-| GET    | /history                    | Not Implemented | GetHistoryCSV |
-| GET    | /history/records/count      | Implemented     | GetCount      |
-| GET    | /history/clients            | Implemented     | ListClients   |
-| GET    | /history/clients/{deviceId} | Implemented     | GetClient     |
+| Method | Endpoint                    | Status      | Function    |
+|--------|-----------------------------|-------------|-------------|
+| GET    | /history                    | Implemented | GetHistory  |
+| GET    | /history/records/count      | Implemented | GetCount    |
+| GET    | /history/clients            | Implemented | ListClients |
+| GET    | /history/clients/{deviceId} | Implemented | GetClient   |
+
+Note that `GetHistory` uses the `/history` api endpoint which returns CSV data that is converted to a struct.  Please note the restrictions on that API:
+
+> *Retrieve small amount clients history to csv format. If startTime and endTime is not given, the time period is last 24 hours. If records amount is more than 50K, the user receives error response and indicate the time range needs to be reduced.*
+
+This error response will be delivered as an `ErrInternalError` with the supplied message from Cisco.  You can check this with:
+
+```go
+records, err := c.HistoryService.GetHistory(ctx, &dnas.HistoryParameters{StartTime: dnas.String("1602576000000"), EndTime: dnas.String("1602662400000")})
+if errors.Is(err, dnas.ErrInternalError) {
+	...
+}
+```
+
+Note that you can also use Go "time" to provide the times:
+
+```go
+fromTime := time.Now().Add(time.Hour*-2).UnixNano() / int64(time.Millisecond)
+toTime := time.Now().UnixNano() / int64(time.Millisecond)
+history, err := c.HistoryService.GetHistory(ctx,
+    &dnas.HistoryParameters{
+		StartTime: dnas.String(strconv.FormatInt(fromTime, 10)),
+        EndTime:   dnas.String(strconv.FormatInt(toTime, 10)),
+    })
+```
+
 
 An example of using history count:
 

@@ -3,6 +3,7 @@ package dnas
 
 import (
 	"context"
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -113,21 +114,46 @@ func (c *Client) makeRequest(ctx context.Context, req *http.Request, v interface
 	defer res.Body.Close()
 
 	if res.StatusCode < http.StatusOK || res.StatusCode >= http.StatusBadRequest {
+
+		var ciscoErr error
+
 		switch res.StatusCode {
 		case 400:
-			return ErrBadRequest
+			ciscoErr = ErrBadRequest
 		case 401:
-			return ErrUnauthorized
+			ciscoErr = ErrUnauthorized
 		case 403:
-			return ErrForbidden
+			ciscoErr = ErrForbidden
 		case 500:
-			return ErrInternalError
+			ciscoErr = ErrInternalError
 		default:
-			return ErrUnknown
+			ciscoErr = ErrUnknown
 		}
+
+		var errRes errorResponse
+		if err = json.NewDecoder(res.Body).Decode(&errRes); err == nil {
+			ciscoErr = fmt.Errorf("%w: %s", ciscoErr, errRes.Message)
+		}
+
+		return ciscoErr
+
 	}
 
 	if res.StatusCode == http.StatusCreated {
+		return nil
+	}
+
+	if res.Header.Get("Content-Type") == "text/csv" {
+		reader := csv.NewReader(res.Body)
+		records, err := reader.ReadAll()
+		if err != nil {
+			return err
+		}
+		if p, ok := v.(*[][]string); ok {
+			*p = records
+		} else {
+			return errors.New("invalid type assertion: v interface{} should be *[][]string for csv records")
+		}
 		return nil
 	}
 
