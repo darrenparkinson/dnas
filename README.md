@@ -10,7 +10,9 @@ This repository is intended as a simple to use library for the Go language to in
 
 DNA Spaces is "*an industry leading indoor location & IoT-as-a Service platform*" from Cisco.  You can find more information [on their site](https://dnaspaces.cisco.com/) and also [sign up for a free trial](https://dnaspaces.cisco.com/#earlyaccess).
 
-In order to use this library, you must have access to DNA Spaces.  As of now, there is currently no sandbox for DNA Spaces and so you will either need an existing DNA Spaces tenant or you will need to sign up for a trial.  In addition, you will need [Go 1.13 or above](https://golang.org/).  
+In order to use this library, you must have access to DNA Spaces.  As of now, there is currently no sandbox for DNA Spaces and so you will either need an existing DNA Spaces tenant or you will need to sign up for a trial.  
+
+In addition, you will need [Go 1.13 or above](https://golang.org/).  
 
 ## Installing
 
@@ -55,7 +57,7 @@ NOTE: Using the context package, one can easily pass cancelation signals and dea
 
 ## Examples
 
-There are some examples of usage in the [examples](examples) folder.  To run these, `git clone` the repository and and run them from the top level folder, e.g.:
+There are some examples of usage in the [examples](examples) folder.  To run these, `git clone` the repository and run them from the top level folder, e.g.:
 
 ```sh
 $ go run examples/count/main.go
